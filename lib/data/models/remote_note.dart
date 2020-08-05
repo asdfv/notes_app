@@ -14,5 +14,5 @@ class RemoteNote {
     this.timestamp = snapshot['timestamp'];
   }
 
-  Note toNote() => Note(title, description);
+  Note toNote() => Note(title, description, timestamp);
 }

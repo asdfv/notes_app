@@ -1,14 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app/data/datasources/firestore_notes_datasource.dart';
+import 'package:notes_app/data/repositories/stub_notes_repository.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
 
-import 'di/get_it.dart';
-
 class NotesPage extends StatefulWidget {
-  NotesPage({Key key, this.title}) : super(key: key);
-
   final String title;
-  final NotesCoordinator coordinator = getIt<NotesCoordinator>();
+
+  final NotesCoordinator coordinator = DefaultNotesCoordinator(
+      StubNoteRepository(FirestoreNotesDatasource(Firestore.instance)));
+
+  NotesPage({Key key, this.title}) : super(key: key);
 
   @override
   _NotesPageState createState() => _NotesPageState();
