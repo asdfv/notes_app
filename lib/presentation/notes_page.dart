@@ -1,15 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:notes_app/data/datasources/firestore_notes_datasource.dart';
-import 'package:notes_app/data/repositories/stub_notes_repository.dart';
-import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
+import 'package:notes_app/presentation/notes/notes_bloc.dart';
+
+import 'bloc/bloc_provider.dart';
 
 class NotesPage extends StatefulWidget {
   final String title;
-
-  final NotesCoordinator coordinator = DefaultNotesCoordinator(
-      StubNoteRepository(FirestoreNotesDatasource(Firestore.instance)));
 
   NotesPage({Key key, this.title}) : super(key: key);
 
@@ -18,22 +14,15 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  Future<List<Note>> _notes;
-
-  void _loadNote() {
-    setState(() {
-      _notes = widget.coordinator.getNotes();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<NotesBloc>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: FutureBuilder<List<Note>>(
-          future: _notes,
+        body: StreamBuilder<List<Note>>(
+          stream: bloc.notes,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return buildNotesList(snapshot.data);
@@ -44,7 +33,7 @@ class _NotesPageState extends State<NotesPage> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _loadNote,
+          onPressed: () => bloc.loadNotes(),
           tooltip: 'Increment',
           child: Icon(Icons.add),
         ));
