@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
 import 'package:notes_app/presentation/feature/notes/notes_event.dart';
 
@@ -8,21 +9,27 @@ import 'notes_state.dart';
 
 class NotesPage extends StatelessWidget {
   final String title;
+  final NotesCoordinator coordinator;
 
-  NotesPage({Key key, this.title}) : super(key: key);
+  NotesPage({Key key, @required this.title, @required this.coordinator}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: key,
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: BlocBuilder<NotesBloc, NotesState>(builder: (context, state) => _buildWidgetFor(state)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => BlocProvider.of<NotesBloc>(context).add(NotesAsked()),
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+    return BlocProvider(
+      create: (_) => NotesBloc(coordinator),
+      child: Builder(
+        builder: (ctx) => Scaffold(
+          key: key,
+          appBar: AppBar(
+            title: Text(title),
+          ),
+          body: BlocBuilder<NotesBloc, NotesState>(builder: (context, state) => _buildWidgetFor(state)),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => BlocProvider.of<NotesBloc>(ctx).add(NotesAsked()),
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+        ),
       ),
     );
   }

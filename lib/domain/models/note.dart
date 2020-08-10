@@ -1,7 +1,8 @@
 class Note {
+  final int id;
   final String title;
   final String description;
-  final int timestamp;
+  final int created;
 
-  Note(this.title, this.description, this.timestamp);
+  Note({this.id, this.title, this.description, this.created});
 }

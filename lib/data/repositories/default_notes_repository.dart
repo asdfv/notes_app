@@ -2,10 +2,10 @@ import 'package:notes_app/data/datasources/notes_datasource.dart';
 import 'package:notes_app/domain/models/note.dart';
 import 'package:notes_app/domain/repositories/notes_repository.dart';
 
-class StubNoteRepository extends NotesRepository {
+class DefaultNotesRepository extends NotesRepository {
   final NotesDatasource notesDatasource;
 
-  StubNoteRepository(this.notesDatasource);
+  DefaultNotesRepository(this.notesDatasource);
 
   @override
   Future<Note> getNote(String id) =>
