@@ -2,13 +2,13 @@ import 'package:notes_app/domain/models/note.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RemoteNote {
-  int id;
+  String id;
   String title;
   String description;
   int created;
 
   RemoteNote({this.id, this.title, this.description, this.created}) {
-    if (id == null) this.id = DateTime.now().millisecondsSinceEpoch;
+    if (id == null) this.id = DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   RemoteNote.fromSnapshot(DocumentSnapshot snapshot) {

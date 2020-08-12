@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
+import 'package:notes_app/presentation/feature/details/details_arguments.dart';
 import 'package:notes_app/presentation/feature/notes/notes_event.dart';
 
 import 'notes_bloc.dart';
@@ -63,8 +64,18 @@ class NotesPage extends StatelessWidget {
 
   ListView _buildNotesList(List<Note> notes) => ListView.builder(
       itemCount: notes.length,
-      itemBuilder: (BuildContext context, int index) => Container(
-            height: 50,
-            child: Center(child: Text('Note: ${notes[index].title}')),
-          ));
+      itemBuilder: (BuildContext context, int index) {
+        var note = notes[index];
+        return Container(
+          height: 50,
+          child: GestureDetector(
+            child: Center(child: Text('Note: ${note.title}')),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/details',
+              arguments: DetailsArguments(id: note.id, title: "Details about id = ${note.id}"),
+            ),
+          ),
+        );
+      });
 }

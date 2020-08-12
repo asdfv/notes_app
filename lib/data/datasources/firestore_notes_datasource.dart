@@ -11,7 +11,7 @@ class FirestoreNotesDatasource extends NotesDatasource {
   @override
   Future<RemoteNote> getNote(String id) => Future.delayed(
         Duration(seconds: 1),
-        () => RemoteNote(id: 13212313, title: "Title", description: "Desc", created: 13212313),
+        () => RemoteNote(title: "Title", description: "Desc", created: 13212313),
       );
 
   @override
@@ -19,5 +19,14 @@ class FirestoreNotesDatasource extends NotesDatasource {
     final data = await _firestore.collection(_collectionName).getDocuments();
     var notes = data.documents.map((snapshot) => RemoteNote.fromSnapshot(snapshot)).toList();
     return Future.value(notes);
+  }
+
+  @override
+  Future<String> save(RemoteNote note) {
+    return _firestore.collection(_collectionName).add({
+      'title': note.title,
+      'description': note.description,
+      'created': note.created ?? DateTime.now().millisecondsSinceEpoch,
+    }).then((document) => document.documentID);
   }
 }

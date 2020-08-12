@@ -2,17 +2,26 @@ import 'package:notes_app/data/datasources/notes_datasource.dart';
 import 'package:notes_app/data/models/remote_note.dart';
 
 class FakeNotesDatasource extends NotesDatasource {
+  Map<String, RemoteNote> _notes = Map.fromIterable(List.generate(200, (index) => index),
+      key: (index) => index.toString(),
+      value: (index) => RemoteNote(id: index.toString(), title: "Title $index", description: "Desc $index", created: index));
+
   @override
   Future<RemoteNote> getNote(String id) => Future.delayed(
         Duration(seconds: 1),
-        () => RemoteNote(id: 1321321, title: "Title", description: "Desc", created: 1231321),
+        () => _notes[id],
       );
 
   @override
-  Future<List<RemoteNote>> getNotes() => Future.delayed(
-      Duration(seconds: 1),
-      () => List.generate(
-            100,
-            (index) => RemoteNote(id: index, title: "Title $index", description: "Desc $index", created: index),
-          ));
+  Future<List<RemoteNote>> getNotes() => Future.delayed(Duration(seconds: 1), () => _notes.values.toList());
+
+  @override
+  Future<String> save(RemoteNote note) {
+    var id = DateTime.now().millisecondsSinceEpoch.toString();
+    _notes[id] = note;
+    return Future.delayed(
+      Duration(milliseconds: 500),
+      () => id,
+    );
+  }
 }

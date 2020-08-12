@@ -23,7 +23,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
             if (notes.length > 1)
               yield NotesReceived(notes);
             else
-              yield NotesReceived([Note(id: 1321321, title: "Title", description: "Desc", created: 1231321)]);
+              yield NotesReceived([Note(title: "Title", description: "Desc", created: 1231321)]);
           } catch (e) {
             yield Failed(e, "Error loading notes.");
           }
