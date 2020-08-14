@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
 import 'package:notes_app/presentation/feature/details/details_arguments.dart';
+import 'package:notes_app/presentation/feature/details/details_page.dart';
 import 'package:notes_app/presentation/feature/notes/notes_event.dart';
 
 import 'notes_bloc.dart';
@@ -11,13 +12,14 @@ import 'notes_state.dart';
 class NotesPage extends StatelessWidget {
   final String title;
   final NotesCoordinator coordinator;
+  static final String route = "/notes";
 
   NotesPage({Key key, @required this.title, @required this.coordinator}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NotesBloc(coordinator),
+    return BlocProvider<NotesBloc>(
+      create: (_) => NotesBloc(coordinator)..add(NotesAsked()),
       child: Builder(
         builder: (ctx) => Scaffold(
           key: key,
@@ -66,14 +68,17 @@ class NotesPage extends StatelessWidget {
       itemCount: notes.length,
       itemBuilder: (BuildContext context, int index) {
         var note = notes[index];
-        return Container(
-          height: 50,
-          child: GestureDetector(
-            child: Center(child: Text('Note: ${note.title}')),
+        return Card(
+          child: ListTile(
+            title: Text(note.title),
+            subtitle: Text(note.description),
+            trailing: Text(
+                note.createdFormat,
+                textAlign: TextAlign.left),
             onTap: () => Navigator.pushNamed(
               context,
-              '/details',
-              arguments: DetailsArguments(id: note.id, title: "Details about id = ${note.id}"),
+              DetailsPage.route,
+              arguments: DetailsArguments(id: note.id),
             ),
           ),
         );

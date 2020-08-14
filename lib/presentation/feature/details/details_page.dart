@@ -9,20 +9,20 @@ import 'details_arguments.dart';
 import 'details_bloc.dart';
 
 class DetailsPage extends StatelessWidget {
-  final String title;
   final NotesCoordinator coordinator;
+  static final String route = "/details";
 
-  DetailsPage({Key key, @required this.title, @required this.coordinator}) : super(key: key);
+  DetailsPage({Key key, @required this.coordinator}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-//    final DetailsArguments args = ModalRoute.of(context).settings.arguments;
-    return BlocProvider(
+    final DetailsArguments args = ModalRoute.of(context).settings.arguments;
+    return BlocProvider<DetailsBloc>(
       create: (_) => DetailsBloc(coordinator),
       child: Builder(
         builder: (ctx) {
-          BlocProvider.of<DetailsBloc>(ctx).add(DetailsAsked("1"));
-          return BlocBuilder(builder: (_, state) => _buildWidgetFor(state));
+          BlocProvider.of<DetailsBloc>(ctx).add(DetailsAsked(args.id));
+          return BlocBuilder<DetailsBloc, DetailsState>(builder: (_, state) => _buildWidgetFor(state));
         },
       ),
     );
@@ -55,5 +55,46 @@ class DetailsPage extends StatelessWidget {
 
   Widget _buildLoading() => Center(child: CircularProgressIndicator());
 
-  Widget _buildDetails(Note note) => Text(note.toString());
+  Widget _buildDetails(Note note) => Scaffold(
+        appBar: AppBar(title: Text("Details for ${note.title}")),
+        body: _detailsWidget(note),
+      );
+
+  Container _detailsWidget(Note note) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          _twinItemWidget("ID", note.id),
+          _twinItemWidget("Title", note.title),
+          _twinItemWidget("Description", note.description),
+          _twinItemWidget("Created", note.createdFormat),
+        ],
+      ),
+    );
+  }
+
+  Column _twinItemWidget(String label, String text) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 20.0,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10.0),
+        ),
+      ],
+    );
+  }
 }
