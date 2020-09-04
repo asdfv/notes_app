@@ -3,8 +3,9 @@ import 'package:notes_app/domain/repositories/notes_repository.dart';
 
 abstract class NotesCoordinator {
   Future<Note> getNote(String id);
-
   Future<List<Note>> getNotes();
+  Future<String> save(Note note);
+  Future<void> delete(String id);
 }
 
 class DefaultNotesCoordinator extends NotesCoordinator {
@@ -17,4 +18,14 @@ class DefaultNotesCoordinator extends NotesCoordinator {
 
   @override
   Future<List<Note>> getNotes() => notesRepository.getNotes();
+
+  @override
+  Future<String> save(Note note) {
+    return notesRepository.save(note);
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await notesRepository.delete(id);
+  }
 }

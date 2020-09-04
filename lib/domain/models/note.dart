@@ -5,6 +5,4 @@ class Note {
   final int created;
 
   Note({this.id, this.title, this.description, this.created});
-
-  get createdFormat => DateTime.fromMillisecondsSinceEpoch(created).toIso8601String();
 }

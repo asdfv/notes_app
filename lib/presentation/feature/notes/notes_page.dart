@@ -1,34 +1,44 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
+import 'package:notes_app/presentation/feature/add/add_page.dart';
 import 'package:notes_app/presentation/feature/details/details_arguments.dart';
 import 'package:notes_app/presentation/feature/details/details_page.dart';
 import 'package:notes_app/presentation/feature/notes/notes_event.dart';
+import 'package:notes_app/presentation/utils/utils.dart';
 
 import 'notes_bloc.dart';
 import 'notes_state.dart';
 
-class NotesPage extends StatelessWidget {
+class NotesPage extends StatefulWidget {
+  static final String route = "/notes";
   final String title;
   final NotesCoordinator coordinator;
-  static final String route = "/notes";
 
   NotesPage({Key key, @required this.title, @required this.coordinator}) : super(key: key);
 
   @override
+  _NotesPageState createState() => _NotesPageState();
+}
+
+class _NotesPageState extends State<NotesPage> {
+  Completer<void> _refreshCompleter = Completer<void>();
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider<NotesBloc>(
-      create: (_) => NotesBloc(coordinator)..add(NotesAsked()),
+      create: (_) => NotesBloc(widget.coordinator)..add(NotesAsked()),
       child: Builder(
         builder: (ctx) => Scaffold(
-          key: key,
           appBar: AppBar(
-            title: Text(title),
+            title: Text(widget.title),
           ),
-          body: BlocBuilder<NotesBloc, NotesState>(builder: (context, state) => _buildWidgetFor(state)),
+          body: BlocBuilder<NotesBloc, NotesState>(builder: (context, state) => _buildWidgetFor(ctx, state)),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => BlocProvider.of<NotesBloc>(ctx).add(NotesAsked()),
+            onPressed: () => _navigateToAddPage(context),
             tooltip: 'Increment',
             child: Icon(Icons.add),
           ),
@@ -37,50 +47,74 @@ class NotesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildWidgetFor(NotesState state) {
+  Future<Object> _navigateToAddPage(BuildContext context) => Navigator.pushNamed(context, AddPage.route);
+
+  Widget _buildWidgetFor(BuildContext context, NotesState state) {
+    print("State received nor NotesScreen: $state.");
     switch (state.runtimeType) {
-      case Initial:
-        return _buildInitial();
-      case Loading:
+      case LoadingState:
         return _buildLoading();
-      case NotesReceived:
-        return _buildNotesList((state as NotesReceived).notes);
-      case Failed:
-        return _buildError(state as Failed);
+      case NotesReceivedState:
+        {
+          _refreshCompleter.complete();
+          _refreshCompleter = Completer();
+          return _buildNotesList(context, (state as NotesReceivedState).notes);
+        }
+      case NoteDeletedState:
+        {
+          final notes = (state as NoteDeletedState).notes;
+          return _buildNotesList(context, notes);
+        }
+      case DeletingFailedState:
+        {
+          final newState = (state as DeletingFailedState);
+          context.snack("Error while deleting note. ${newState.reason}.");
+          return _buildNotesList(context, newState.notes);
+        }
+      case LoadingFailedState:
+        return _buildError(state as LoadingFailedState);
       default:
         return _buildError();
     }
   }
 
-  Text _buildInitial() => Text("Push the button to load notes.");
-
-  Widget _buildError([Failed state]) {
+  Widget _buildError([LoadingFailedState state]) {
     if (state == null) {
       return Text("Error happened, oh my god!");
     } else {
-      return Text("Error happened: ${state.reason}.");
+      return Text("Error happened: ${state.reason}. Cause: ${state.cause}.");
     }
   }
 
   Widget _buildLoading() => Center(child: CircularProgressIndicator());
 
-  ListView _buildNotesList(List<Note> notes) => ListView.builder(
-      itemCount: notes.length,
-      itemBuilder: (BuildContext context, int index) {
-        var note = notes[index];
-        return Card(
-          child: ListTile(
-            title: Text(note.title),
-            subtitle: Text(note.description),
-            trailing: Text(
-                note.createdFormat,
-                textAlign: TextAlign.left),
-            onTap: () => Navigator.pushNamed(
-              context,
-              DetailsPage.route,
-              arguments: DetailsArguments(id: note.id),
-            ),
-          ),
-        );
-      });
+  Widget _buildNotesList(BuildContext context, List<Note> notes) => RefreshIndicator(
+        onRefresh: () {
+          BlocProvider.of<NotesBloc>(context).add(NotesAsked());
+          return _refreshCompleter.future;
+        },
+        child: ListView.builder(
+            itemCount: notes.length,
+            itemBuilder: (BuildContext context, int index) {
+              var note = notes[index];
+              return Dismissible(
+                key: UniqueKey(),
+                onDismissed: (_) {
+                  BlocProvider.of<NotesBloc>(context).add(DeleteNoteAsked(note.id, notes, index));
+                },
+                child: Card(
+                  child: ListTile(
+                      title: Text(note.title),
+                      subtitle: Text("${note.description}"),
+                      isThreeLine: true,
+                      trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
+                      onTap: () => Navigator.pushNamed(
+                            context,
+                            DetailsPage.route,
+                            arguments: DetailsArguments(id: note.id),
+                          )),
+                ),
+              );
+            }),
+      );
 }

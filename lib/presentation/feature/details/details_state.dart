@@ -7,7 +7,7 @@ class Initial extends DetailsState {}
 class Loading extends DetailsState {}
 
 class Failed extends DetailsState {
-  final Exception cause;
+  final Object cause;
   final String reason;
 
   Failed(this.cause, this.reason);

@@ -12,10 +12,17 @@ class RemoteNote {
   }
 
   RemoteNote.fromSnapshot(DocumentSnapshot snapshot) {
-    this.id = snapshot['id'];
-    this.title = snapshot['title'];
-    this.description = snapshot['description'];
-    this.created = snapshot['timestamp'];
+    this.id = snapshot.documentID ?? '-';
+    this.title = snapshot['title'] ?? '-';
+    this.description = snapshot['description'] ?? '-';
+    this.created = snapshot['created'] ?? 0;
+  }
+
+  RemoteNote.fromNote(Note note) {
+    this.id = note.id;
+    this.title = note.title;
+    this.description = note.description;
+    this.created = note.created;
   }
 
   Note toNote() => Note(id: id, title: title, description: description, created: created);

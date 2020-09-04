@@ -9,10 +9,13 @@ class FirestoreNotesDatasource extends NotesDatasource {
   FirestoreNotesDatasource(this._firestore);
 
   @override
-  Future<RemoteNote> getNote(String id) => Future.delayed(
-        Duration(seconds: 1),
-        () => RemoteNote(title: "Title", description: "Desc", created: 13212313),
-      );
+  Future<RemoteNote> getNote(String id) async {
+    var snapshot = await _firestore.collection(_collectionName).document(id).get();
+    if (snapshot.data != null) {
+      return Future.value(RemoteNote.fromSnapshot(snapshot));
+    }
+    throw Exception("Document with id = $id not found.");
+  }
 
   @override
   Future<List<RemoteNote>> getNotes() async {
@@ -22,11 +25,18 @@ class FirestoreNotesDatasource extends NotesDatasource {
   }
 
   @override
-  Future<String> save(RemoteNote note) {
-    return _firestore.collection(_collectionName).add({
+  Future<String> save(RemoteNote note) async {
+     var document = await _firestore.collection(_collectionName).add({
       'title': note.title,
       'description': note.description,
       'created': note.created ?? DateTime.now().millisecondsSinceEpoch,
-    }).then((document) => document.documentID);
+    });
+     return document.documentID;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    // todo check throwing exception
+    await _firestore.collection(_collectionName).document(id).delete();
   }
 }

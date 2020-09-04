@@ -25,4 +25,12 @@ class FakeNotesDatasource extends NotesDatasource {
       () => id,
     );
   }
+
+  @override
+  Future<void> delete(String id) async {
+    await Future.delayed(
+      Duration(milliseconds: 300),
+      () => _notes.remove(id),
+    );
+  }
 }
