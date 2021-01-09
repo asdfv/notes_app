@@ -14,13 +14,12 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
   @override
   Stream<NotesState> mapEventToState(NotesEvent event) async* {
-    print("Event received from NotesScreen: $event.");
     switch (event.runtimeType) {
       case NotesAsked:
         {
           yield LoadingState();
           try {
-            var notes = await coordinator.getNotes();
+            List<Note> notes = await coordinator.getNotes();
             yield NotesReceivedState(notes);
           } catch (e) {
             yield LoadingFailedState(e, "Error loading notes.");

@@ -27,8 +27,8 @@ class FakeNotesDatasource extends NotesDatasource {
   }
 
   @override
-  Future<void> delete(String id) async {
-    await Future.delayed(
+  Future<void> delete(String id) {
+    return Future.delayed(
       Duration(milliseconds: 300),
       () => _notes.remove(id),
     );

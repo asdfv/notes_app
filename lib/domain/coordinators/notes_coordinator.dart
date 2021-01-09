@@ -25,7 +25,7 @@ class DefaultNotesCoordinator extends NotesCoordinator {
   }
 
   @override
-  Future<void> delete(String id) async {
-    await notesRepository.delete(id);
+  Future<void> delete(String id) {
+    return notesRepository.delete(id);
   }
 }

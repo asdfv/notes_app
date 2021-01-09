@@ -31,17 +31,17 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return BlocProvider<NotesBloc>(
       create: (_) => NotesBloc(widget.coordinator)..add(NotesAsked()),
-      child: Builder(
-        builder: (ctx) => Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-          ),
-          body: BlocBuilder<NotesBloc, NotesState>(builder: (context, state) => _buildWidgetFor(ctx, state)),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _navigateToAddPage(context),
-            tooltip: 'Increment',
-            child: Icon(Icons.add),
-          ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: BlocBuilder<NotesBloc, NotesState>(
+          builder: (ctx, state) => _buildWidgetFor(ctx, state),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _navigateToAddPage(context),
+          tooltip: 'Add note',
+          child: Icon(Icons.add),
         ),
       ),
     );
@@ -50,7 +50,6 @@ class _NotesPageState extends State<NotesPage> {
   Future<Object> _navigateToAddPage(BuildContext context) => Navigator.pushNamed(context, AddPage.route);
 
   Widget _buildWidgetFor(BuildContext context, NotesState state) {
-    print("State received nor NotesScreen: $state.");
     switch (state.runtimeType) {
       case LoadingState:
         return _buildLoading();
@@ -90,7 +89,7 @@ class _NotesPageState extends State<NotesPage> {
 
   Widget _buildNotesList(BuildContext context, List<Note> notes) => RefreshIndicator(
         onRefresh: () {
-          BlocProvider.of<NotesBloc>(context).add(NotesAsked());
+          context.read<NotesBloc>().add(NotesAsked());
           return _refreshCompleter.future;
         },
         child: ListView.builder(
@@ -100,7 +99,7 @@ class _NotesPageState extends State<NotesPage> {
               return Dismissible(
                 key: UniqueKey(),
                 onDismissed: (_) {
-                  BlocProvider.of<NotesBloc>(context).add(DeleteNoteAsked(note.id, notes, index));
+                  context.read<NotesBloc>().add(DeleteNoteAsked(note.id, notes, index));
                 },
                 child: Card(
                   child: ListTile(

@@ -12,7 +12,7 @@ class RemoteNote {
   }
 
   RemoteNote.fromSnapshot(DocumentSnapshot snapshot) {
-    this.id = snapshot.documentID ?? '-';
+    this.id = snapshot.id ?? '-';
     this.title = snapshot['title'] ?? '-';
     this.description = snapshot['description'] ?? '-';
     this.created = snapshot['created'] ?? 0;
