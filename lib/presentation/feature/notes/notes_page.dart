@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
@@ -52,32 +53,46 @@ class _NotesPageState extends State<NotesPage> {
   Widget _buildWidgetFor(BuildContext context, NotesState state) {
     switch (state.runtimeType) {
       case LoadingState:
-        return _buildLoading();
+        return _createLoading();
       case NotesReceivedState:
         {
           _refreshCompleter.complete();
           _refreshCompleter = Completer();
-          return _buildNotesList(context, (state as NotesReceivedState).notes);
+          return NotesListWidget(
+            notes: (state as NotesReceivedState).notes,
+            refreshCompleter: _refreshCompleter,
+          );
+          // return _createNotesList(context, (state as NotesReceivedState).notes);
         }
       case NoteDeletedState:
         {
           final notes = (state as NoteDeletedState).notes;
-          return _buildNotesList(context, notes);
+          return NotesListWidget(
+            notes: notes,
+            refreshCompleter: _refreshCompleter,
+          );
+          // return _createNotesList(context, notes);
         }
       case DeletingFailedState:
         {
           final newState = (state as DeletingFailedState);
-          context.snack("Error while deleting note. ${newState.reason}.");
-          return _buildNotesList(context, newState.notes);
+          return NotesListWidget(
+            notes: newState.notes,
+            refreshCompleter: _refreshCompleter,
+            errorMessage: newState.reason,
+          );
+
+          // return _createNotesList(context, newState.notes,
+          //     errorMessage: "Error while deleting note. ${newState.reason}.");
         }
       case LoadingFailedState:
-        return _buildError(state as LoadingFailedState);
+        return _createError(state as LoadingFailedState);
       default:
-        return _buildError();
+        return _createError();
     }
   }
 
-  Widget _buildError([LoadingFailedState state]) {
+  Widget _createError([LoadingFailedState state]) {
     if (state == null) {
       return Text("Error happened, oh my god!");
     } else {
@@ -85,35 +100,51 @@ class _NotesPageState extends State<NotesPage> {
     }
   }
 
-  Widget _buildLoading() => Center(child: CircularProgressIndicator());
+  Widget _createLoading() => Center(child: CircularProgressIndicator());
+}
 
-  Widget _buildNotesList(BuildContext context, List<Note> notes) => RefreshIndicator(
-        onRefresh: () {
-          context.read<NotesBloc>().add(NotesAsked());
-          return _refreshCompleter.future;
-        },
-        child: ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (BuildContext context, int index) {
-              var note = notes[index];
-              return Dismissible(
-                key: UniqueKey(),
-                onDismissed: (_) {
-                  context.read<NotesBloc>().add(DeleteNoteAsked(note.id, notes, index));
-                },
-                child: Card(
-                  child: ListTile(
-                      title: Text(note.title),
-                      subtitle: Text("${note.description}"),
-                      isThreeLine: true,
-                      trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
-                      onTap: () => Navigator.pushNamed(
-                            context,
-                            DetailsPage.route,
-                            arguments: DetailsArguments(id: note.id),
-                          )),
-                ),
-              );
-            }),
-      );
+class NotesListWidget extends StatelessWidget {
+  final List<Note> notes;
+  final String errorMessage;
+  final Completer<void> refreshCompleter;
+
+  const NotesListWidget({Key key, this.notes, this.errorMessage, this.refreshCompleter}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (errorMessage != null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        context.snack(errorMessage);
+      });
+    }
+    return RefreshIndicator(
+      onRefresh: () {
+        BlocProvider.of<NotesBloc>(context).add(NotesAsked());
+        return refreshCompleter.future;
+      },
+      child: ListView.builder(
+          itemCount: notes.length,
+          itemBuilder: (BuildContext context, int index) {
+            var note = notes[index];
+            return Dismissible(
+              key: UniqueKey(),
+              onDismissed: (_) {
+                BlocProvider.of<NotesBloc>(context).add(DeleteNoteAsked(note.id, notes, index));
+              },
+              child: Card(
+                child: ListTile(
+                    title: Text(note.title),
+                    subtitle: Text(note.description),
+                    isThreeLine: true,
+                    trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
+                    onTap: () => Navigator.pushNamed(
+                          context,
+                          DetailsPage.route,
+                          arguments: DetailsArguments(id: note.id),
+                        )),
+              ),
+            );
+          }),
+    );
+  }
 }

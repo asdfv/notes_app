@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/domain/errors/errors.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/domain/models/note.dart';
 
@@ -21,7 +22,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           try {
             List<Note> notes = await coordinator.getNotes();
             yield NotesReceivedState(notes);
-          } catch (e) {
+          } on NotesException catch (e) {
             yield LoadingFailedState(e, "Error loading notes.");
           }
           break;
@@ -35,8 +36,8 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
             await coordinator.delete(id);
             notes.removeAt(index);
             yield NoteDeletedState(id, notes);
-          } catch (e) {
-            yield DeletingFailedState(e, "Error while delete note $id.", notes);
+          } on NotesException catch (e) {
+            yield DeletingFailedState("Error while delete note $id. ${e.message}", notes);
           }
           break;
         }

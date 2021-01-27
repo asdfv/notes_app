@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/data/datasources/fake_notes_datasource.dart';
 import 'package:notes_app/data/datasources/firestore_notes_datasource.dart';
+import 'package:notes_app/data/error/network_error_convertor.dart';
 import 'package:notes_app/data/repositories/default_notes_repository.dart';
 import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 import 'package:notes_app/presentation/feature/add/add_page.dart';
@@ -24,12 +25,12 @@ class FirebaseApp extends StatelessWidget {
       future: Firebase.initializeApp(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Text('Error connecting to FireBase');
+          return Text('Error connecting to FireBase', textDirection: TextDirection.ltr);
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return NotesApp();
         }
-        return Text('Connecting to firebase...');
+        return Text('Connecting to firebase...', textDirection: TextDirection.ltr);
       },
     );
   }
@@ -37,7 +38,7 @@ class FirebaseApp extends StatelessWidget {
 
 class NotesApp extends StatelessWidget {
   final NotesCoordinator notesCoordinator = DefaultNotesCoordinator(
-      DefaultNotesRepository(FakeNotesDatasource(), FirestoreNotesDatasource(FirebaseFirestore.instance)));
+      DefaultNotesRepository(FakeNotesDatasource(), FirestoreNotesDatasource(FirebaseFirestore.instance)), NetworkErrorConverter());
 
   @override
   Widget build(BuildContext context) {

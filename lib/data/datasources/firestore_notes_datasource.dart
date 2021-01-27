@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:notes_app/data/datasources/notes_datasource.dart';
 import 'package:notes_app/data/models/remote_note.dart';
+import 'package:notes_app/domain/utilities/logger.dart';
 
 class FirestoreNotesDatasource extends NotesDatasource {
   final String _collectionName = "notes";
   final FirebaseFirestore _firestore;
+  final log = getLogger();
 
   FirestoreNotesDatasource(this._firestore);
 
@@ -36,6 +38,7 @@ class FirestoreNotesDatasource extends NotesDatasource {
 
   @override
   Future<void> delete(String id) {
+    log.d(message: "Deleting note: $id");
     return _firestore.collection(_collectionName).doc(id).delete();
   }
 }

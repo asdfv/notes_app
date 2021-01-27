@@ -14,11 +14,10 @@ class LoadingFailedState extends NotesState {
 }
 
 class DeletingFailedState extends NotesState {
-  final Object cause;
   final String reason;
   final List<Note> notes;
 
-  DeletingFailedState(this.cause, this.reason, this.notes);
+  DeletingFailedState(this.reason, this.notes);
 }
 
 class NotesReceivedState extends NotesState {
