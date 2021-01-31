@@ -2,18 +2,18 @@ import 'package:domain/models/note.dart';
 
 abstract class NotesEvent {}
 
-class NotesAsked extends NotesEvent {}
+class LoadNotes extends NotesEvent {}
 
-class DetailsAsked extends NotesEvent {
+class OpenDetails extends NotesEvent {
   final String id;
 
-  DetailsAsked(this.id);
+  OpenDetails(this.id);
 }
 
-class DeleteNoteAsked extends NotesEvent {
+class DeleteNote extends NotesEvent {
   final String id;
   final List<Note> notes;
   final int index;
 
-  DeleteNoteAsked(this.id, this.notes, this.index);
+  DeleteNote(this.id, this.notes, this.index);
 }

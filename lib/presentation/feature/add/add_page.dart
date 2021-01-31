@@ -3,7 +3,6 @@ import 'package:domain/models/note.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/presentation/feature/notes/notes_page.dart';
 import 'package:notes_app/presentation/utils/utils.dart';
 
 import 'add_bloc.dart';
@@ -34,25 +33,25 @@ class AddPage extends StatelessWidget {
 
   Widget _buildWidgetFor(BuildContext context, AddState state) {
     switch (state.runtimeType) {
-      case InitialState:
-        return _buildInitial();
-      case LoadingState:
-        return _buildLoading();
-      case SavedState:
+      case Initial:
+        return _createInitialWidget();
+      case Loading:
+        return _createLoadingWidget();
+      case Saved:
         {
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, NotesPage.route);
+            Navigator.pop(context);
           });
           return Center(child: Text("Saved successfully"));
         }
-      case FailedState:
-        return _buildError(state as FailedState);
+      case Failed:
+        return _createErrorWidget(state as Failed);
       default:
-        return _buildError();
+        return _createErrorWidget();
     }
   }
 
-  Widget _buildError([FailedState state]) {
+  Widget _createErrorWidget([Failed state]) {
     if (state == null) {
       return Text("Error happened, oh my god!");
     } else {
@@ -60,9 +59,9 @@ class AddPage extends StatelessWidget {
     }
   }
 
-  Widget _buildLoading() => Center(child: CircularProgressIndicator());
+  Widget _createLoadingWidget() => Center(child: CircularProgressIndicator());
 
-  Widget _buildInitial() => AddNoteForm();
+  Widget _createInitialWidget() => AddNoteForm();
 }
 
 class AddNoteForm extends StatefulWidget {
@@ -126,7 +125,7 @@ class AddNoteFormState extends State<AddNoteForm> {
 
   String validator(value) {
     if (value.length < 3) {
-      return 'Please enter some text longer then 3 symbols';
+      return 'Please enter some text longer than 3 symbols';
     }
     return null;
   }

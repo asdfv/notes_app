@@ -1,7 +1,7 @@
 abstract class DetailsEvent {}
 
-class DetailsAsked extends DetailsEvent {
+class LoadDetails extends DetailsEvent {
   final String id;
 
-  DetailsAsked(this.id);
+  LoadDetails(this.id);
 }

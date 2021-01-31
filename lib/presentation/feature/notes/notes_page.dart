@@ -31,7 +31,7 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NotesBloc>(
-      create: (_) => NotesBloc(widget.coordinator)..add(NotesAsked()),
+      create: (_) => NotesBloc(widget.coordinator)..add(LoadNotes()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -52,44 +52,42 @@ class _NotesPageState extends State<NotesPage> {
 
   Widget _buildWidgetFor(BuildContext context, NotesState state) {
     switch (state.runtimeType) {
-      case LoadingState:
+      case Loading:
         return _createLoading();
-      case NotesReceivedState:
+      case NotesReceived:
         {
           _refreshCompleter.complete();
           _refreshCompleter = Completer();
           return NotesListWidget(
-            notes: (state as NotesReceivedState).notes,
+            notes: (state as NotesReceived).notes,
             refreshCompleter: _refreshCompleter,
           );
-          // return _createNotesList(context, (state as NotesReceivedState).notes);
         }
-      case NoteDeletedState:
+      case NoteDeleted:
         {
-          final notes = (state as NoteDeletedState).notes;
+          final notes = (state as NoteDeleted).notes;
           return NotesListWidget(
             notes: notes,
             refreshCompleter: _refreshCompleter,
           );
-          // return _createNotesList(context, notes);
         }
-      case DeletingFailedState:
+      case DeletingFailed:
         {
-          final newState = (state as DeletingFailedState);
+          final newState = (state as DeletingFailed);
           return NotesListWidget(
             notes: newState.notes,
             refreshCompleter: _refreshCompleter,
             errorMessage: newState.reason,
           );
         }
-      case LoadingFailedState:
-        return _createError(state as LoadingFailedState);
+      case LoadingFailed:
+        return _createError(state as LoadingFailed);
       default:
         return _createError();
     }
   }
 
-  Widget _createError([LoadingFailedState state]) {
+  Widget _createError([LoadingFailed state]) {
     if (state == null) {
       return Text("Error happened, oh my god!");
     } else {
@@ -116,7 +114,7 @@ class NotesListWidget extends StatelessWidget {
     }
     return RefreshIndicator(
       onRefresh: () {
-        BlocProvider.of<NotesBloc>(context).add(NotesAsked());
+        BlocProvider.of<NotesBloc>(context).add(LoadNotes());
         return refreshCompleter.future;
       },
       child: ListView.builder(
@@ -126,7 +124,7 @@ class NotesListWidget extends StatelessWidget {
             return Dismissible(
               key: UniqueKey(),
               onDismissed: (_) {
-                BlocProvider.of<NotesBloc>(context).add(DeleteNoteAsked(note.id, notes, index));
+                BlocProvider.of<NotesBloc>(context).add(DeleteNote(note.id, notes, index));
               },
               child: Card(
                 child: ListTile(

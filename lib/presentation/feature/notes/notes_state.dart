@@ -2,31 +2,31 @@ import 'package:domain/models/note.dart';
 
 abstract class NotesState {}
 
-class LoadingState extends NotesState {}
+class Loading extends NotesState {}
 
-class LoadingFailedState extends NotesState {
+class LoadingFailed extends NotesState {
   final Object cause;
   final String reason;
 
-  LoadingFailedState(this.cause, this.reason);
+  LoadingFailed(this.cause, this.reason);
 }
 
-class DeletingFailedState extends NotesState {
+class DeletingFailed extends NotesState {
   final String reason;
   final List<Note> notes;
 
-  DeletingFailedState(this.reason, this.notes);
+  DeletingFailed(this.reason, this.notes);
 }
 
-class NotesReceivedState extends NotesState {
+class NotesReceived extends NotesState {
   final List<Note> notes;
 
-  NotesReceivedState(this.notes);
+  NotesReceived(this.notes);
 }
 
-class NoteDeletedState extends NotesState {
+class NoteDeleted extends NotesState {
   final String id;
   final List<Note> notes;
 
-  NoteDeletedState(this.id, this.notes);
+  NoteDeleted(this.id, this.notes);
 }

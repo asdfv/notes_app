@@ -9,26 +9,26 @@ import 'add_state.dart';
 class AddBloc extends Bloc<AddEvent, AddState> {
   final NotesCoordinator coordinator;
 
-  AddBloc(this.coordinator) : super(InitialState());
+  AddBloc(this.coordinator) : super(Initial());
 
   @override
   Stream<AddState> mapEventToState(AddEvent event) async* {
     switch (event.runtimeType) {
       case Save:
         {
-          yield LoadingState();
+          yield Loading();
           try {
             var note = (event as Save).note;
             var id = await coordinator.save(note);
-            yield SavedState(id);
+            yield Saved(id);
           } catch (e) {
-            yield FailedState(e, "Error loading note details.");
+            yield Failed(e, "Error while saving note.");
           }
           break;
         }
       default:
         {
-          yield FailedState(null, "Unknown event.");
+          yield Failed(null, "Unknown event.");
         }
     }
   }

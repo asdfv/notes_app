@@ -14,11 +14,11 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   @override
   Stream<DetailsState> mapEventToState(DetailsEvent event) async* {
     switch (event.runtimeType) {
-      case DetailsAsked:
+      case LoadDetails:
         {
           yield Loading();
           try {
-            var id = (event as DetailsAsked).id;
+            var id = (event as LoadDetails).id;
             var details = await coordinator.getNote(id);
             yield DetailsReceived(details);
           } catch (e) {

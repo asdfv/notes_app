@@ -22,7 +22,7 @@ class DetailsPage extends StatelessWidget {
       create: (_) => DetailsBloc(coordinator),
       child: Builder(
         builder: (ctx) {
-          BlocProvider.of<DetailsBloc>(ctx).add(DetailsAsked(args.id));
+          BlocProvider.of<DetailsBloc>(ctx).add(LoadDetails(args.id));
           return BlocBuilder<DetailsBloc, DetailsState>(builder: (_, state) => _buildWidgetFor(state));
         },
       ),
