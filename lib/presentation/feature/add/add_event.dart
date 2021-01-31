@@ -1,4 +1,4 @@
-import 'package:notes_app/domain/models/note.dart';
+import 'package:domain/models/note.dart';
 
 abstract class AddEvent {}
 

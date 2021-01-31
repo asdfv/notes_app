@@ -10,12 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  domain:
+    path: ./domain
   cloud_firestore: ^0.14.4
   equatable: ^1.2.5
   firebase_core: ^0.5.3
   flutter_bloc: ^6.1.1
   intl: ^0.16.1
-  logger: ^0.6.0
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,9 @@
-import 'package:notes_app/domain/models/note.dart';
+import 'package:domain/models/note.dart';
 
 abstract class NotesEvent {}
 
 class NotesAsked extends NotesEvent {}
+
 class DetailsAsked extends NotesEvent {
   final String id;
 

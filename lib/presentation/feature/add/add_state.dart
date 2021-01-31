@@ -1,6 +1,7 @@
 abstract class AddState {}
 
 class InitialState extends AddState {}
+
 class LoadingState extends AddState {}
 
 class FailedState extends AddState {

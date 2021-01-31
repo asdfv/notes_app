@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:domain/coordinators/notes_coordinator.dart';
+import 'package:domain/errors/errors.dart';
+import 'package:domain/models/note.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/domain/errors/errors.dart';
-import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
-import 'package:notes_app/domain/models/note.dart';
 
 import 'notes_event.dart';
 import 'notes_state.dart';

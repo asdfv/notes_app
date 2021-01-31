@@ -1,10 +1,9 @@
+import 'package:domain/coordinators/notes_coordinator.dart';
+import 'package:domain/models/note.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
-import 'package:notes_app/domain/models/note.dart';
 import 'package:notes_app/presentation/feature/details/details_event.dart';
 import 'package:notes_app/presentation/feature/details/details_state.dart';
-import 'package:notes_app/presentation/utils/utils.dart';
 
 import 'details_arguments.dart';
 import 'details_bloc.dart';
@@ -69,7 +68,7 @@ class DetailsPage extends StatelessWidget {
           _twinItemWidget("ID", note.id),
           _twinItemWidget("Title", note.title),
           _twinItemWidget("Description", note.description),
-          _twinItemWidget("Created", note.created.toFormattedDate()),
+          _twinItemWidget("Created", note.created.toString()),
         ],
       ),
     );

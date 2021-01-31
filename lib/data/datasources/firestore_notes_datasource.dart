@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:domain/utilities/logger.dart';
 import 'package:notes_app/data/datasources/notes_datasource.dart';
 import 'package:notes_app/data/models/remote_note.dart';
-import 'package:notes_app/domain/utilities/logger.dart';
 
 class FirestoreNotesDatasource extends NotesDatasource {
   final String _collectionName = "notes";

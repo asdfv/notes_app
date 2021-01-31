@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:domain/coordinators/notes_coordinator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/domain/coordinators/notes_coordinator.dart';
 
 import 'details_event.dart';
 import 'details_state.dart';

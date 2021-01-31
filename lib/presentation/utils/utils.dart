@@ -1,6 +1,6 @@
+import 'package:domain/models/note.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_app/domain/models/note.dart';
 
 extension SnackbarInScaffold on BuildContext {
   void snack(String message) {
