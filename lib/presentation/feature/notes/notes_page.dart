@@ -81,9 +81,6 @@ class _NotesPageState extends State<NotesPage> {
             refreshCompleter: _refreshCompleter,
             errorMessage: newState.reason,
           );
-
-          // return _createNotesList(context, newState.notes,
-          //     errorMessage: "Error while deleting note. ${newState.reason}.");
         }
       case LoadingFailedState:
         return _createError(state as LoadingFailedState);
