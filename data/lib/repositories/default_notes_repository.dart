@@ -1,7 +1,7 @@
+import 'package:data/datasources/notes_datasource.dart';
+import 'package:data/models/remote_note.dart';
 import 'package:domain/models/note.dart';
 import 'package:domain/repositories/notes_repository.dart';
-import 'package:notes_app/data/datasources/notes_datasource.dart';
-import 'package:notes_app/data/models/remote_note.dart';
 
 class DefaultNotesRepository extends NotesRepository {
   final NotesDatasource fakeDatasource;

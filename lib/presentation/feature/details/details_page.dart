@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/presentation/feature/details/details_event.dart';
 import 'package:notes_app/presentation/feature/details/details_state.dart';
 
+import '../../utils/utils.dart';
 import 'details_arguments.dart';
 import 'details_bloc.dart';
 
@@ -68,7 +69,7 @@ class DetailsPage extends StatelessWidget {
           _twinItemWidget("ID", note.id),
           _twinItemWidget("Title", note.title),
           _twinItemWidget("Description", note.description),
-          _twinItemWidget("Created", note.created.toString()),
+          _twinItemWidget("Created", note.created.toFormattedDate()),
         ],
       ),
     );

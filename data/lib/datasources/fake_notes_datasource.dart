@@ -1,5 +1,6 @@
-import 'package:notes_app/data/datasources/notes_datasource.dart';
-import 'package:notes_app/data/models/remote_note.dart';
+import 'package:data/models/remote_note.dart';
+
+import 'notes_datasource.dart';
 
 class FakeNotesDatasource extends NotesDatasource {
   Map<String, RemoteNote> _notes = Map.fromIterable(List.generate(300, (index) => index),
