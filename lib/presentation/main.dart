@@ -13,27 +13,11 @@ import 'package:notes_app/presentation/feature/details/details_page.dart';
 import 'bloc/simple_bloc_observer.dart';
 import 'feature/notes/notes_page.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
-  runApp(FirebaseApp());
-}
-
-class FirebaseApp extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error connecting to FireBase', textDirection: TextDirection.ltr);
-        }
-        if (snapshot.connectionState == ConnectionState.done) {
-          return NotesApp();
-        }
-        return Text('Connecting to firebase...', textDirection: TextDirection.ltr);
-      },
-    );
-  }
+  await Firebase.initializeApp();
+  runApp(NotesApp());
 }
 
 class NotesApp extends StatelessWidget {
