@@ -30,14 +30,11 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       case DeleteNote:
         {
           final String id = (event as DeleteNote).id;
-          final List<Note> notes = (event as DeleteNote).notes;
-          final int index = (event as DeleteNote).index;
           try {
             await coordinator.delete(id);
-            notes.removeAt(index);
-            yield NoteDeleted(id, notes);
+            yield NoteDeleted(id);
           } on NotesException catch (e) {
-            yield DeletingFailed("Error while delete note $id. ${e.message}", notes);
+            yield DeletingFailed("Error while delete note $id. ${e.message}");
           }
           break;
         }

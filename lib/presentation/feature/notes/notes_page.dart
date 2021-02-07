@@ -3,15 +3,12 @@ import 'dart:async';
 import 'package:domain/coordinators/notes_coordinator.dart';
 import 'package:domain/models/note.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/presentation/feature/add/add_page.dart';
-import 'package:notes_app/presentation/feature/details/details_arguments.dart';
-import 'package:notes_app/presentation/feature/details/details_page.dart';
 import 'package:notes_app/presentation/feature/notes/notes_event.dart';
-import 'package:notes_app/presentation/utils/utils.dart';
 
 import 'notes_bloc.dart';
+import 'notes_list_widget.dart';
 import 'notes_state.dart';
 
 class NotesPage extends StatefulWidget {
@@ -27,28 +24,41 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   Completer<void> _refreshCompleter = Completer<void>();
+  List<Note> _notes = [];
 
   @override
   Widget build(BuildContext context) {
+    NotesCoordinator notesCoordinator = widget.coordinator;
+    String title = widget.title;
+
     return BlocProvider<NotesBloc>(
-      create: (_) => NotesBloc(widget.coordinator)..add(LoadNotes()),
+      create: (_) => NotesBloc(notesCoordinator)..add(LoadNotes()),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(title),
         ),
         body: BlocBuilder<NotesBloc, NotesState>(
           builder: (ctx, state) => _buildWidgetFor(ctx, state),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _navigateToAddPage(context),
-          tooltip: 'Add note',
-          child: Icon(Icons.add),
+        floatingActionButton: Builder(
+          builder: (ctx) => FloatingActionButton(
+            onPressed: () {
+              _navigateToAddPage(ctx);
+            },
+            tooltip: 'Add note',
+            child: Icon(Icons.add),
+          ),
         ),
       ),
     );
   }
 
-  Future<Object> _navigateToAddPage(BuildContext context) => Navigator.pushNamed(context, AddPage.route);
+  _navigateToAddPage(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, AddPage.route);
+    Scaffold.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text("$result")));
+  }
 
   Widget _buildWidgetFor(BuildContext context, NotesState state) {
     switch (state.runtimeType) {
@@ -58,16 +68,18 @@ class _NotesPageState extends State<NotesPage> {
         {
           _refreshCompleter.complete();
           _refreshCompleter = Completer();
+          _notes = (state as NotesReceived).notes;
           return NotesListWidget(
-            notes: (state as NotesReceived).notes,
+            notes: _notes,
             refreshCompleter: _refreshCompleter,
           );
         }
       case NoteDeleted:
         {
-          final notes = (state as NoteDeleted).notes;
+          var id = (state as NoteDeleted).id;
+          _notes.removeWhere((element) => element.id == id);
           return NotesListWidget(
-            notes: notes,
+            notes: _notes,
             refreshCompleter: _refreshCompleter,
           );
         }
@@ -75,7 +87,7 @@ class _NotesPageState extends State<NotesPage> {
         {
           final newState = (state as DeletingFailed);
           return NotesListWidget(
-            notes: newState.notes,
+            notes: _notes,
             refreshCompleter: _refreshCompleter,
             errorMessage: newState.reason,
           );
@@ -96,50 +108,4 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   Widget _createLoading() => Center(child: CircularProgressIndicator());
-}
-
-class NotesListWidget extends StatelessWidget {
-  final List<Note> notes;
-  final String errorMessage;
-  final Completer<void> refreshCompleter;
-
-  const NotesListWidget({Key key, this.notes, this.errorMessage, this.refreshCompleter}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (errorMessage != null) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        context.snack(errorMessage);
-      });
-    }
-    return RefreshIndicator(
-      onRefresh: () {
-        BlocProvider.of<NotesBloc>(context).add(LoadNotes());
-        return refreshCompleter.future;
-      },
-      child: ListView.builder(
-          itemCount: notes.length,
-          itemBuilder: (BuildContext context, int index) {
-            var note = notes[index];
-            return Dismissible(
-              key: UniqueKey(),
-              onDismissed: (_) {
-                BlocProvider.of<NotesBloc>(context).add(DeleteNote(note.id, notes, index));
-              },
-              child: Card(
-                child: ListTile(
-                    title: Text(note.title),
-                    subtitle: Text(note.description),
-                    isThreeLine: true,
-                    trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
-                    onTap: () => Navigator.pushNamed(
-                          context,
-                          DetailsPage.route,
-                          arguments: DetailsArguments(id: note.id),
-                        )),
-              ),
-            );
-          }),
-    );
-  }
 }

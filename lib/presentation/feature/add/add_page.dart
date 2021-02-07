@@ -40,9 +40,9 @@ class AddPage extends StatelessWidget {
       case Saved:
         {
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context);
+            Navigator.pop(context, (state as Saved).id);
           });
-          return Center(child: Text("Saved successfully"));
+          return _createLoadingWidget();
         }
       case Failed:
         return _createErrorWidget(state as Failed);
@@ -91,7 +91,7 @@ class AddNoteFormState extends State<AddNoteForm> {
               labelText: 'Title',
             ),
             keyboardType: TextInputType.text,
-            validator: validator,
+            validator: _validator,
           ),
           TextFormField(
             onSaved: (value) {
@@ -102,7 +102,7 @@ class AddNoteFormState extends State<AddNoteForm> {
               labelText: 'Description',
             ),
             keyboardType: TextInputType.text,
-            validator: validator,
+            validator: _validator,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -123,7 +123,7 @@ class AddNoteFormState extends State<AddNoteForm> {
     );
   }
 
-  String validator(value) {
+  String _validator(value) {
     if (value.length < 3) {
       return 'Please enter some text longer than 3 symbols';
     }
