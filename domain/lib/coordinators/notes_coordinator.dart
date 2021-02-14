@@ -7,7 +7,7 @@ abstract class NotesCoordinator {
 
   Future<List<Note>> getNotes();
 
-  Future<String> save(Note note);
+  Future<Note> save(Note note);
 
   Future<void> delete(String id);
 }
@@ -29,7 +29,7 @@ class DefaultNotesCoordinator extends NotesCoordinator {
       });
 
   @override
-  Future<String> save(Note note) {
+  Future<Note> save(Note note) {
     return notesRepository.save(note).catchError((error) {
       throw errorConverter.convert(error);
     });

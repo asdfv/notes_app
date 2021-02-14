@@ -28,13 +28,14 @@ class FirestoreNotesDatasource extends NotesDatasource {
   }
 
   @override
-  Future<String> save(RemoteNote note) async {
+  Future<RemoteNote> save(RemoteNote note) async {
     var document = await _firestore.collection(_collectionName).add({
       'title': note.title,
       'description': note.description,
       'created': note.created ?? DateTime.now().millisecondsSinceEpoch,
     });
-    return document.id;
+    note.id = document.id;
+    return note;
   }
 
   @override

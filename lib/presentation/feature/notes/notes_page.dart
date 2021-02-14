@@ -54,30 +54,19 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   _navigateToAddPage(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, AddPage.route);
-    Scaffold.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("$result")));
+    final note = await Navigator.pushNamed(context, AddPage.route);
+    BlocProvider.of<NotesBloc>(context).add(NoteAdded(note));
   }
 
   Widget _buildWidgetFor(BuildContext context, NotesState state) {
     switch (state.runtimeType) {
       case Loading:
         return _createLoading();
-      case NotesReceived:
+      case NotesUpdated:
         {
           _refreshCompleter.complete();
           _refreshCompleter = Completer();
-          _notes = (state as NotesReceived).notes;
-          return NotesListWidget(
-            notes: _notes,
-            refreshCompleter: _refreshCompleter,
-          );
-        }
-      case NoteDeleted:
-        {
-          var id = (state as NoteDeleted).id;
-          _notes.removeWhere((element) => element.id == id);
+          _notes = (state as NotesUpdated).notes;
           return NotesListWidget(
             notes: _notes,
             refreshCompleter: _refreshCompleter,

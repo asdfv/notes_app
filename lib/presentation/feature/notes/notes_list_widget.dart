@@ -18,13 +18,10 @@ class NotesListWidget extends StatefulWidget {
   const NotesListWidget({Key key, this.notes, this.errorMessage, this.refreshCompleter}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _NotesListWidgetState(notes);
+  State<StatefulWidget> createState() => _NotesListWidgetState();
 }
 
 class _NotesListWidgetState extends State<NotesListWidget> {
-  final List<Note> notes;
-
-  _NotesListWidgetState(this.notes);
 
   @override
   Widget build(BuildContext context) {

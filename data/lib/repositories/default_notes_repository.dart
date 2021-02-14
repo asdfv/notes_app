@@ -23,8 +23,8 @@ class DefaultNotesRepository extends NotesRepository {
   }
 
   @override
-  Future<String> save(Note note) {
-    return fireStoreDatasource.save(RemoteNote.fromNote(note));
+  Future<Note> save(Note note) {
+    return fireStoreDatasource.save(RemoteNote.fromNote(note)).then((remoteNote) => remoteNote.toNote());
   }
 
   @override

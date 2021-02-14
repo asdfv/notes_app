@@ -10,7 +10,7 @@ NotesLogger getLogger() {
     colors: true,
     printEmojis: true,
   ));
-  return SimpleNoteLogger(logger);
+  return SimpleNotesLogger(logger);
 }
 
 abstract class NotesLogger {
@@ -25,19 +25,19 @@ abstract class NotesLogger {
   void e({@required String message, Exception error});
 }
 
-class SimpleNoteLogger extends NotesLogger {
+class SimpleNotesLogger extends NotesLogger {
   final Logger logger;
 
-  SimpleNoteLogger(this.logger);
+  SimpleNotesLogger(this.logger);
+
+  @override
+  void v({String message, Exception error}) {
+    logger.v(message, error);
+  }
 
   @override
   void d({String message, Exception error}) {
     logger.d(message, error);
-  }
-
-  @override
-  void e({String message, Exception error}) {
-    logger.e(message, error);
   }
 
   @override
@@ -46,8 +46,8 @@ class SimpleNoteLogger extends NotesLogger {
   }
 
   @override
-  void v({String message, Exception error}) {
-    logger.v(message, error);
+  void e({String message, Exception error}) {
+    logger.e(message, error);
   }
 
   @override

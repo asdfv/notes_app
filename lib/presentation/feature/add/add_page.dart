@@ -40,7 +40,7 @@ class AddPage extends StatelessWidget {
       case Saved:
         {
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context, (state as Saved).id);
+            Navigator.pop(context, (state as Saved).note);
           });
           return _createLoadingWidget();
         }

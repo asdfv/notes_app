@@ -18,12 +18,12 @@ class FakeNotesDatasource extends NotesDatasource {
   Future<List<RemoteNote>> getNotes() => Future.delayed(Duration(milliseconds: 300), () => _notes.values.toList());
 
   @override
-  Future<String> save(RemoteNote note) {
+  Future<RemoteNote> save(RemoteNote note) {
     var id = DateTime.now().millisecondsSinceEpoch.toString();
     _notes[id] = note;
     return Future.delayed(
       Duration(milliseconds: 300),
-      () => id,
+      () => note,
     );
   }
 

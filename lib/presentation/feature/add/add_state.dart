@@ -1,3 +1,5 @@
+import 'package:domain/models/note.dart';
+
 abstract class AddState {}
 
 class Initial extends AddState {}
@@ -12,7 +14,7 @@ class Failed extends AddState {
 }
 
 class Saved extends AddState {
-  final String id;
+  final Note note;
 
-  Saved(this.id);
+  Saved(this.note);
 }

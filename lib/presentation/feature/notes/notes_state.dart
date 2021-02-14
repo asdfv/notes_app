@@ -17,14 +17,8 @@ class DeletingFailed extends NotesState {
   DeletingFailed(this.reason);
 }
 
-class NotesReceived extends NotesState {
+class NotesUpdated extends NotesState {
   final List<Note> notes;
 
-  NotesReceived(this.notes);
-}
-
-class NoteDeleted extends NotesState {
-  final String id;
-
-  NoteDeleted(this.id);
+  NotesUpdated(this.notes);
 }

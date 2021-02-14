@@ -5,7 +5,7 @@ abstract class NotesRepository {
 
   Future<List<Note>> getNotes();
 
-  Future<String> save(Note note);
+  Future<Note> save(Note note);
 
   Future<void> delete(String id);
 }

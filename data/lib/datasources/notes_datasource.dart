@@ -5,7 +5,7 @@ abstract class NotesDatasource {
 
   Future<List<RemoteNote>> getNotes();
 
-  Future<String> save(RemoteNote note);
+  Future<RemoteNote> save(RemoteNote note);
 
   Future<void> delete(String id);
 }

@@ -10,6 +10,7 @@ import 'notes_state.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
   final NotesCoordinator coordinator;
+  List<Note> _notes = [];
 
   NotesBloc(this.coordinator) : super(Loading());
 
@@ -21,7 +22,8 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           yield Loading();
           try {
             List<Note> notes = await coordinator.getNotes();
-            yield NotesReceived(notes);
+            _notes = notes;
+            yield NotesUpdated(_notes);
           } on NotesException catch (e) {
             yield LoadingFailed(e, "Error loading notes.");
           }
@@ -32,10 +34,18 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           final String id = (event as DeleteNote).id;
           try {
             await coordinator.delete(id);
-            yield NoteDeleted(id);
+            _notes.removeWhere((element) => element.id == id);
+            yield NotesUpdated(_notes);
           } on NotesException catch (e) {
             yield DeletingFailed("Error while delete note $id. ${e.message}");
           }
+          break;
+        }
+      case NoteAdded:
+        {
+          var note = (event as NoteAdded).note;
+          _notes.add(note);
+          yield NotesUpdated(_notes);
           break;
         }
       default:

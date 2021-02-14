@@ -18,9 +18,9 @@ class AddBloc extends Bloc<AddEvent, AddState> {
         {
           yield Loading();
           try {
-            var note = (event as Save).note;
-            var id = await coordinator.save(note);
-            yield Saved(id);
+            var noteToSave = (event as Save).note;
+            var note = await coordinator.save(noteToSave);
+            yield Saved(note);
           } catch (e) {
             yield Failed(e, "Error while saving note.");
           }
