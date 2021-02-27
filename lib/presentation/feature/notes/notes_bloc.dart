@@ -44,7 +44,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       case NoteAdded:
         {
           var note = (event as NoteAdded).note;
-          _notes.add(note);
+          _notes.insert(0, note);
           yield NotesUpdated(_notes);
           break;
         }

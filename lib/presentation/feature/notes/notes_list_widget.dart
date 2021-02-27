@@ -22,7 +22,6 @@ class NotesListWidget extends StatefulWidget {
 }
 
 class _NotesListWidgetState extends State<NotesListWidget> {
-
   @override
   Widget build(BuildContext context) {
     var errorMessage = widget.errorMessage;
@@ -39,13 +38,12 @@ class _NotesListWidgetState extends State<NotesListWidget> {
         BlocProvider.of<NotesBloc>(context).add(LoadNotes());
         return refreshCompleterFuture;
       },
-      child: AnimatedList(
-          initialItemCount: notes.length,
-          itemBuilder: (context, index, animation) {
+      child: ListView.builder(
+          itemCount: notes.length,
+          itemBuilder: (context, index) {
             var note = notes[index];
             return NotesListItem(
               note: note,
-              animation: animation,
               onRemove: () {
                 BlocProvider.of<NotesBloc>(context).add(DeleteNote(note.id));
               },

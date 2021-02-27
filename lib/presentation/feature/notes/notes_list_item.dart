@@ -5,33 +5,29 @@ import 'package:notes_app/presentation/feature/details/details_page.dart';
 import 'package:notes_app/presentation/utils/utils.dart';
 
 class NotesListItem extends StatelessWidget {
-  final Animation animation;
   final Note note;
   final Function onRemove;
 
-  const NotesListItem({Key key, this.note, this.animation, this.onRemove}) : super(key: key);
+  const NotesListItem({Key key, this.note, this.onRemove}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Dismissible(
-        key: UniqueKey(),
-        onDismissed: (_) {
-          onRemove.call();
-        },
-        child: Card(
-          child: ListTile(
-              title: Text(note.title),
-              subtitle: Text(note.description),
-              isThreeLine: true,
-              trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
-              onTap: () => Navigator.pushNamed(
-                    context,
-                    DetailsPage.route,
-                    arguments: DetailsArguments(id: note.id),
-                  )),
-        ),
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (_) {
+        onRemove.call();
+      },
+      child: Card(
+        child: ListTile(
+            title: Text(note.title),
+            subtitle: Text(note.description),
+            isThreeLine: true,
+            trailing: Text(note.created.toFormattedDate(), textAlign: TextAlign.left),
+            onTap: () => Navigator.pushNamed(
+                  context,
+                  DetailsPage.route,
+                  arguments: DetailsArguments(id: note.id),
+                )),
       ),
     );
   }
