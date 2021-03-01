@@ -1,4 +1,4 @@
-import 'package:data/models/remote_note.dart';
+import 'package:data/src/models/remote_note.dart';
 
 abstract class NotesDatasource {
   Future<RemoteNote> getNote(String id);

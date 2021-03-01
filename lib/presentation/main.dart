@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:data/datasources/fake_notes_datasource.dart';
-import 'package:data/datasources/firestore_notes_datasource.dart';
-import 'package:data/error/network_error_convertor.dart';
-import 'package:data/repositories/default_notes_repository.dart';
+import 'package:data/data_module.dart';
 import 'package:domain/domain_module.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
