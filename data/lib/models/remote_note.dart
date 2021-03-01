@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:domain/models/note.dart';
+import 'package:domain/domain_module.dart';
 
 class RemoteNote {
   String id;

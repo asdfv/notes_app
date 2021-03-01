@@ -1,5 +1,4 @@
-import 'package:domain/errors/error_converter.dart';
-import 'package:domain/errors/errors.dart';
+import 'package:domain/domain_module.dart';
 
 class NetworkErrorConverter extends ErrorConverter {
   @override

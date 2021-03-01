@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data/models/remote_note.dart';
-import 'package:domain/utilities/logger.dart';
+import 'package:domain/domain_module.dart';
 
 import 'notes_datasource.dart';
 

@@ -1,5 +1,4 @@
-import 'package:domain/coordinators/notes_coordinator.dart';
-import 'package:domain/models/note.dart';
+import 'package:domain/domain_module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/presentation/feature/details/details_event.dart';

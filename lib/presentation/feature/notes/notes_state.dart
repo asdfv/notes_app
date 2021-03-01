@@ -1,4 +1,4 @@
-import 'package:domain/models/note.dart';
+import 'package:domain/domain_module.dart';
 
 abstract class NotesState {}
 

@@ -1,6 +1,6 @@
-import 'package:domain/errors/error_converter.dart';
-import 'package:domain/models/note.dart';
-import 'package:domain/repositories/notes_repository.dart';
+import 'package:domain/src/errors/error_converter.dart';
+import 'package:domain/src/models/note.dart';
+import 'package:domain/src/repositories/notes_repository.dart';
 
 abstract class NotesCoordinator {
   Future<Note> getNote(String id);
