@@ -4,7 +4,7 @@ version: 0.0.1
 author: asdfv
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
   domain:
     path: ../domain
-  cloud_firestore: ^0.14.4
-  firebase_core: ^0.5.3
+  cloud_firestore: ^0.16.0+1
+  firebase_core: ^0.7.0
 
 dev_dependencies:
   flutter_test:
