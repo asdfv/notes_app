@@ -1,3 +1,4 @@
+/// Domain exceptions.
 abstract class NotesException implements Exception {
   final String message;
 
