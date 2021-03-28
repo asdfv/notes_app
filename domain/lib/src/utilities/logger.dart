@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 NotesLogger getLogger() {
@@ -14,15 +13,15 @@ NotesLogger getLogger() {
 }
 
 abstract class NotesLogger {
-  void v({@required String message, Exception error});
+  void v({String message, Exception error});
 
-  void d({@required String message, Exception error});
+  void d({String message, Exception error});
 
-  void i({@required String message, Exception error});
+  void i({String message, Exception error});
 
-  void w({@required String message, Exception error});
+  void w({String message, Exception error});
 
-  void e({@required String message, Exception error});
+  void e({String message, Exception error});
 }
 
 class SimpleNotesLogger extends NotesLogger {

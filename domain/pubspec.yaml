@@ -1,5 +1,5 @@
 name: domain
-description: A new Flutter package project.
+description: Notes app domain layer
 version: 0.0.1
 author: asdfv
 
@@ -8,13 +8,5 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   logger: ^0.6.0
   equatable: ^1.2.5
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
